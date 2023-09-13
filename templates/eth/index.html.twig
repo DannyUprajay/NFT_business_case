@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ETH index{% endblock %}
+
+{% block body %}
+    <h1>ETH index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Price</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for e_t_h in e_t_hs %}
+            <tr>
+                <td>{{ e_t_h.id }}</td>
+                <td>{{ e_t_h.price }}</td>
+                <td>{{ e_t_h.date ? e_t_h.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_e_t_h_show', {'id': e_t_h.id}) }}">show</a>
+                    <a href="{{ path('app_e_t_h_edit', {'id': e_t_h.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_e_t_h_new') }}">Create new</a>
+{% endblock %}

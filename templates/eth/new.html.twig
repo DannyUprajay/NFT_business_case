@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ETH{% endblock %}
+
+{% block body %}
+    <h1>Create new ETH</h1>
+
+    {{ include('eth/_form.html.twig') }}
+
+    <a href="{{ path('app_e_t_h_index') }}">back to list</a>
+{% endblock %}
