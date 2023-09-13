@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -21,9 +22,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['userGroup'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['userGroup'])]
     private array $roles = [];
 
     /**
@@ -33,12 +36,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['userGroup'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['userGroup'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['userGroup'])]
     private ?string $gender = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -46,12 +52,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['userGroup'])]
     private ?Adress $adress = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: NFT::class)]
+    #[Groups(['userGroup'])]
     private Collection $nfts;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Gallery::class)]
+    #[Groups(['userGroup'])]
     private Collection $galleries;
 
     public function __construct()

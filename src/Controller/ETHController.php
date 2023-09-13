@@ -11,15 +11,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/e/t/h')]
+#[Route('/eth')]
 class ETHController extends AbstractController
 {
     #[Route('/', name: 'app_e_t_h_index', methods: ['GET'])]
     public function index(ETHRepository $eTHRepository): Response
     {
-        return $this->render('eth/index.html.twig', [
-            'e_t_hs' => $eTHRepository->findAll(),
-        ]);
+        $eth = $eTHRepository->findAll();
+        return $this->json($eth);
+//        return $this->render('eth/index.html.twig', [
+//            'e_t_hs' => $eTHRepository->findAll(),
+//        ]);
     }
 
     #[Route('/new', name: 'app_e_t_h_new', methods: ['GET', 'POST'])]

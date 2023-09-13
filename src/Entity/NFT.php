@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: NFTRepository::class)]
 class NFT
@@ -17,6 +18,7 @@ class NFT
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['nftall'])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -27,6 +29,7 @@ class NFT
 
     #[ORM\ManyToOne(inversedBy: 'nfts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['nftall'])]
     private ?User $user = null;
 
     #[ORM\ManyToMany(targetEntity: Gallery::class, inversedBy: 'nFTs')]
