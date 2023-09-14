@@ -19,7 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
 
-    private PDOService $pdoService;
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -31,29 +30,33 @@ class UserController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $requestData = json_decode($request->getContent(), true);
+        var_dump($requestData);
 
-        $datePost = $requestData['birth'];
-        $datePost = date_parse_from_format('j/n/Y', $datePost);
-
-        $date = new \DateTime();
-        $date->setDate($datePost['year'], $datePost['month'], $datePost['day']);
-
-        if (
-            $requestData['email'] !== null &&
-            $requestData['firstName'] !== null &&
-            $requestData['lastName'] !== null &&
-            $requestData['birth'] !== null &&
-            $requestData['password'] !== null &&
-            $requestData['gender'] !== null &&
-            $requestData['adress']['postalCode'] !== null &&
-            $requestData['adress']['label'] !== null &&
-            $requestData['adress']['contry'] !== null
+        if(   isset($requestData['email']) !== null &&
+            isset($requestData['firstName']) !== null  &&
+            isset($requestData['lastName']) !== null &&
+            isset($requestData['role']) !== null &&
+            isset($requestData['birth']) !== null &&
+            isset($requestData['password']) !== null &&
+            isset($requestData['gender']) !== null &&
+            isset($requestData['adress']['postalCode']) !== null &&
+            isset($requestData['adress']['label']) !== null &&
+            isset($requestData['adress']['contry']) !== null
         ) {
+
+            $datePost = $requestData['birth'];
+            $datePost = date_parse_from_format('j/n/Y', $datePost);
+
+            $date = new DateTime();
+
+            $date->setDate($datePost['year'], $datePost['month'], $datePost['day']);
+
             $user = new User();
             $user->setEmail($requestData['email']);
             $user->setFirstName($requestData['firstName']);
             $user->setLastName($requestData['lastName']);
             $user->setBirth($date);
+            $user->setRoles($requestData['role']);
             $user->setGender($requestData['gender']);
             $user->setPassword($requestData['password']);
 
