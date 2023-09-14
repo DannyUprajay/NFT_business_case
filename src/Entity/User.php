@@ -26,29 +26,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['userGroup'])]
     private ?string $email = null;
 
-    #[ORM\Column]
+    #[ORM\Column (nullable: true)]
     #[Groups(['userGroup'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column (nullable: true)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['userGroup'])]
     private ?string $firstName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['userGroup'])]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['userGroup'])]
     private ?string $gender = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $birth = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
