@@ -43,11 +43,10 @@ class GalleryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_gallery_show', methods: ['GET'])]
-    public function show(Gallery $gallery): Response
+    public function show(GalleryRepository $galleryRepository, $id): Response
     {
-        return $this->render('gallery/show.html.twig', [
-            'gallery' => $gallery,
-        ]);
+        $gallery = $galleryRepository->find($id);
+        return $this->json($gallery, 200, [], ['groups' => 'userGroup']);
     }
 
     #[Route('/{id}/edit', name: 'app_gallery_edit', methods: ['GET', 'POST'])]

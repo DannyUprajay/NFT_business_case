@@ -14,6 +14,7 @@ class Gallery
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(['userGroup'])]
     #[ORM\Column]
     private ?int $id = null;
 
