@@ -80,37 +80,74 @@ class UserController extends AbstractController
         }
     }
 
-
-
-
-
-
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(UserRepository $userRepository, $id): Response
     {
-//        return $this->render('user/show.html.twig', [
-//            'user' => $user,
-//        ]);
         $user = $userRepository->find($id);
         return $this->json($user, 200, [], ['groups' => 'userGroup']);
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit($id, Request $request, UserRepository $user, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
+        $requestData = json_decode($request->getContent(), true);
+        $user = $user->find($id);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        if (!$user) {
+            return new Response('Utilisateur non trouvé', 404);
         }
 
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
+        $userModified = false;
+
+        if (isset($requestData["email"]) && $requestData["email"] !== $user->getEmail()) {
+            $user->setEmail($requestData["email"]);
+            $userModified = true;
+        }
+
+        if (isset($requestData["firstName"]) && $requestData["firstName"] !== $user->getFirstName()) {
+            $user->setFirstName($requestData["firstName"]);
+            $userModified = true;
+        }
+
+        if (isset($requestData["lastName"]) && $requestData["lastName"] !== $user->getLastName()) {
+            $user->setLastName($requestData["lastName"]);
+            $userModified = true;
+        }
+
+        if (isset($requestData["password"]) && $requestData["password"] !== $user->getPassword()) {
+            $user->setPassword($requestData["password"]);
+            $userModified = true;
+        }
+
+        if (isset($requestData["adress"])) {
+            $addressData = $requestData["adress"];
+            $adress = $user->getAdress(); // Obtenez l'adresse de l'utilisateur
+
+            if ($adress) {
+                if (isset($addressData["label"]) && $addressData["label"] !== $adress->getLabel()) {
+                    $adress->setLabel($addressData["label"]);
+                    $userModified = true;
+                }
+
+                if (isset($addressData["postalCode"]) && $addressData["postalCode"] !== $adress->getPostalCode()) {
+                    $adress->setPostalCode($addressData["postalCode"]);
+                    $userModified = true;
+                }
+
+                if (isset($addressData["country"]) && $addressData["country"] !== $adress->getContry()) {
+                    $adress->setCountry($addressData["country"]);
+                    $userModified = true;
+                }
+            }
+        }
+
+        if ($userModified) {
+            $entityManager->flush();
+            return new Response('Modifications enregistrées avec succès', 200);
+        } else {
+            return new Response('Aucune modification n\'a été apportée', 200);
+        }
+
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
