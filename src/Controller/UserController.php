@@ -56,7 +56,7 @@ class UserController extends AbstractController
             $user->setFirstName($requestData['firstName']);
             $user->setLastName($requestData['lastName']);
             $user->setBirth($date);
-            $user->setRoles($requestData['role']);
+            $user->setRoles(['ROLE_USER']);
             $user->setGender($requestData['gender']);
             $user->setPassword($requestData['password']);
 
@@ -71,6 +71,9 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            if (isset($requestData['role'])) {
+                $user->setRoles($requestData['role']);
+            }
             return new Response('Utilisateur créé avec succès', 201);
         } else {
             return new Response('Données manquantes', 400);
