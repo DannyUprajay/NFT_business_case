@@ -32,7 +32,7 @@ class UserController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
         var_dump($requestData);
 
-        if(   isset($requestData['email']) !== null &&
+        if( isset($requestData['email']) !== null &&
             isset($requestData['firstName']) !== null  &&
             isset($requestData['lastName']) !== null &&
             isset($requestData['role']) !== null &&
@@ -46,7 +46,6 @@ class UserController extends AbstractController
 
             $datePost = $requestData['birth'];
             $datePost = date_parse_from_format('j/n/Y', $datePost);
-
             $date = new DateTime();
 
             $date->setDate($datePost['year'], $datePost['month'], $datePost['day']);
@@ -99,7 +98,7 @@ class UserController extends AbstractController
 
         $userModified = false;
 
-        if (isset($requestData["email"]) && $requestData["email"] !== $user->getEmail()) {
+        if ($requestData["email"] !== $user->getEmail()) {
             $user->setEmail($requestData["email"]);
             $userModified = true;
         }
@@ -135,7 +134,7 @@ class UserController extends AbstractController
                 }
 
                 if (isset($addressData["country"]) && $addressData["country"] !== $adress->getContry()) {
-                    $adress->setCountry($addressData["country"]);
+                    $adress->setContry($addressData["country"]);
                     $userModified = true;
                 }
             }
@@ -151,15 +150,15 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function delete($id , Request $request, UserRepository $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($user);
-            $entityManager->flush();
-        }
 
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        $user = $user->find($id);
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return new Response('L\'utilisateur à bien été supprimé', 200);
+
     }
-
 
 }
