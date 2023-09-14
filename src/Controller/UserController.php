@@ -108,7 +108,7 @@ class UserController extends AbstractController
             $userModified = true;
         }
 
-        if (isset($requestData["lastName"]) && $requestData["lastName"] !== $user->getLastName()) {
+        if ($requestData["lastName"] !== "" && $requestData["lastName"] !== $user->getLastName()) {
             $user->setLastName($requestData["lastName"]);
             $userModified = true;
         }
