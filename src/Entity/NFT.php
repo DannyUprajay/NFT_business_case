@@ -15,6 +15,7 @@ class NFT
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['nftall'])]
     private ?int $id = null;
 
     #[ORM\Column]
@@ -22,14 +23,15 @@ class NFT
     private ?int $price = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['nftall'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['nftall'])]
     private ?string $pathImage = null;
 
     #[ORM\ManyToOne(inversedBy: 'nfts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['nftall'])]
     private ?User $user = null;
 
     #[ORM\ManyToMany(targetEntity: Gallery::class, inversedBy: 'nFTs')]
@@ -37,6 +39,10 @@ class NFT
 
     #[ORM\ManyToMany(targetEntity: SubCategory::class, inversedBy: 'nFTs')]
     private Collection $subCategories;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['nftall'])]
+    private ?string $name = null;
 
     public function __construct()
     {
@@ -141,6 +147,18 @@ class NFT
     public function removeSubCategory(SubCategory $subCategory): static
     {
         $this->subCategories->removeElement($subCategory);
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
 
         return $this;
     }

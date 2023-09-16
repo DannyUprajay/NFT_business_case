@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use DateTime;
 use App\Entity\NFT;
 use App\Form\NFTType;
 use App\Repository\NFTRepository;
@@ -10,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+//use Symfony\Component\Validator\Constraints\DateTime;
+
 
 #[Route('/nft')]
 class NFTController extends AbstractController
@@ -21,55 +25,50 @@ class NFTController extends AbstractController
     {
         $nft = $nFTRepository->findAll();
         return $this->json($nft ,200, [], ['groups' => 'nftall']);
-//        return $this->render('nft/index.html.twig', [
-//            'n_f_ts' => $nFTRepository->findAll(),
-//        ]);
+
     }
 
     #[Route('/new', name: 'app_n_f_t_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $nFT = new NFT();
-        $form = $this->createForm(NFTType::class, $nFT);
-        $form->handleRequest($request);
+        $data = json_decode($request->getContent(), true);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($nFT);
+        if (
+            isset($data["name"]) !== null &&
+            isset($data['pathImage']) !== null  &&
+            isset($data['price'])  !== null &&
+            isset($data['userId']) !== null
+        ) {
+            $nft = new NFT();
+            $date = new DateTime();
+            $nft->setName($data["name"]);
+            $nft->setPathImage($data["pathImage"]);
+            $nft->setDate($date);
+            $nft->setPrice($data["price"]);
+            $nft->setUser($this->getUser());
+    var_dump($nft);
+            $entityManager->persist($nft);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_n_f_t_index', [], Response::HTTP_SEE_OTHER);
+            return new Response("NFT créé");
+        } else {
+            return new Response("Pas créé");
         }
-
-        return $this->render('nft/new.html.twig', [
-            'n_f_t' => $nFT,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/{id}', name: 'app_n_f_t_show', methods: ['GET'])]
-    public function show(NFT $nFT): Response
+    public function show($id, NFTRepository $NFTRepository): Response
     {
-        return $this->render('nft/show.html.twig', [
-            'n_f_t' => $nFT,
-        ]);
+       $nft = $NFTRepository->find($id);
+        return $this->json($nft ,200, [], ['groups' => 'nftall']);
     }
 
     #[Route('/{id}/edit', name: 'app_n_f_t_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, NFT $nFT, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(NFTType::class, $nFT);
-        $form->handleRequest($request);
+      return new Response();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_n_f_t_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('nft/edit.html.twig', [
-            'n_f_t' => $nFT,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/{id}', name: 'app_n_f_t_delete', methods: ['POST'])]

@@ -73,9 +73,9 @@ class UserController extends AbstractController
             if (isset($requestData['role'])) {
                 $user->setRoles($requestData['role']);
             }
-            return new Response('Utilisateur créé avec succès', 201);
+            return new Response();
         } else {
-            return new Response('Données manquantes', 400);
+            return new Response();
         }
     }
 
@@ -142,14 +142,14 @@ class UserController extends AbstractController
 
         if ($userModified) {
             $entityManager->flush();
-            return new Response('Modifications enregistrées avec succès', 200);
+            return new Response();
         } else {
-            return new Response('Aucune modification n\'a été apportée', 200);
+            return new Response();
         }
 
     }
 
-    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_user_delete', methods: ['DELETE'])]
     public function delete($id , Request $request, UserRepository $user, EntityManagerInterface $entityManager): Response
     {
 
@@ -157,7 +157,7 @@ class UserController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
 
-        return new Response('L\'utilisateur à bien été supprimé', 200);
+        return new Response();
 
     }
 
