@@ -46,8 +46,9 @@ class NFTController extends AbstractController
             $nft->setDate($date);
             $nft->setPrice($data["price"]);
             $nft->setUser($this->getUser());
-    var_dump($nft);
+            dump($nft);
             $entityManager->persist($nft);
+            dump($nft);
             $entityManager->flush();
 
             return new Response("NFT créé");
