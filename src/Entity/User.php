@@ -64,6 +64,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['userGroup'])]
     private Collection $galleries;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['nftall'])]
+    private ?string $username = null;
+
     public function __construct()
     {
         $this->nfts = new ArrayCollection();
@@ -257,6 +261,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $gallery->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }

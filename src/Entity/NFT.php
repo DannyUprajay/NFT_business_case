@@ -31,6 +31,7 @@ class NFT
     private ?string $pathImage = null;
 
     #[ORM\ManyToOne(inversedBy: 'nfts')]
+    #[Groups(['nftall'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
