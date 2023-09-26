@@ -13,7 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email' )]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -35,7 +36,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column (nullable: true)]
     private ?string $password = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['userGroup'])]
     private ?string $firstName = null;
@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['userGroup'])]
     private Collection $galleries;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     #[Groups(['nftall'])]
     private ?string $username = null;
 

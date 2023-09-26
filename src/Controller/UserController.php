@@ -35,6 +35,7 @@ class UserController extends AbstractController
         if( isset($requestData['email']) !== null &&
             isset($requestData['firstName']) !== null  &&
             isset($requestData['lastName']) !== null &&
+            isset($requestData['username']) !== null &&
             isset($requestData['role']) !== null &&
             isset($requestData['birth']) !== null &&
             isset($requestData['password']) !== null &&
@@ -54,6 +55,7 @@ class UserController extends AbstractController
             $user->setEmail($requestData['email']);
             $user->setFirstName($requestData['firstName']);
             $user->setLastName($requestData['lastName']);
+            $user->setUsername($requestData['username']);
             $user->setBirth($date);
             $user->setRoles(['ROLE_USER']);
             $user->setGender($requestData['gender']);

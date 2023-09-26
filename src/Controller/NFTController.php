@@ -3,22 +3,25 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use DateTime;
 use App\Entity\NFT;
 use App\Form\NFTType;
 use App\Repository\NFTRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 //use Symfony\Component\Validator\Constraints\DateTime;
 
 
 #[Route('/nft')]
 class NFTController extends AbstractController
 {
-
 
     #[Route('/', name: 'app_n_f_t_index', methods: ['GET'])]
     public function index(NFTRepository $nFTRepository): Response
@@ -29,9 +32,18 @@ class NFTController extends AbstractController
     }
 
     #[Route('/new', name: 'app_n_f_t_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         $data = json_decode($request->getContent(), true);
+
+        $token = $request->headers->get('Authorization');
+        $tokenParts = explode(".", $token);
+        $tokenHeader = base64_decode($tokenParts[0]);
+        $tokenPayload = base64_decode($tokenParts[1]);
+        $jwtHeader = json_decode($tokenHeader);
+        $jwtPayload = json_decode($tokenPayload);
+//        dd($jwtPayload->username);
+
 
         if (
             isset($data["name"]) !== null &&
@@ -39,13 +51,14 @@ class NFTController extends AbstractController
             isset($data['price'])  !== null &&
             isset($data['userId']) !== null
         ) {
+            $user = $userRepository->findOneBy(['username' => $jwtPayload->username]);
             $nft = new NFT();
             $date = new DateTime();
             $nft->setName($data["name"]);
             $nft->setPathImage($data["pathImage"]);
             $nft->setDate($date);
             $nft->setPrice($data["price"]);
-            $nft->setUser($this->getUser());
+            $nft->setUser($user);
             dump($nft);
             $entityManager->persist($nft);
             dump($nft);
