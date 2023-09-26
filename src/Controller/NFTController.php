@@ -81,7 +81,7 @@ class NFTController extends AbstractController
        $nft = $nft->find($id);
 
        if(!$nft){
-           return new Response('Utilisateur non trouvé', 404);
+           return new Response();
        }
 
         $nftModified = false;
@@ -107,8 +107,6 @@ class NFTController extends AbstractController
         } else {
             return new Response();
         }
-
-
 
     }
 

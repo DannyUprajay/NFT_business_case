@@ -122,7 +122,7 @@ class UserController extends AbstractController
 
         if (isset($requestData["adress"])) {
             $addressData = $requestData["adress"];
-            $adress = $user->getAdress(); // Obtenez l'adresse de l'utilisateur
+            $adress = $user->getAdress();
 
             if ($adress) {
                 if (isset($addressData["label"]) && $addressData["label"] !== $adress->getLabel()) {
