@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-//use Symfony\Component\Validator\Constraints\DateTime;
+
 
 
 #[Route('/nft')]
@@ -40,10 +40,7 @@ class NFTController extends AbstractController
         $tokenParts = explode(".", $token);
         $tokenHeader = base64_decode($tokenParts[0]);
         $tokenPayload = base64_decode($tokenParts[1]);
-        $jwtHeader = json_decode($tokenHeader);
         $jwtPayload = json_decode($tokenPayload);
-//        dd($jwtPayload->username);
-
 
         if (
             isset($data["name"]) !== null &&
@@ -78,21 +75,50 @@ class NFTController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_n_f_t_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, NFT $nFT, EntityManagerInterface $entityManager): Response
+    public function edit($id, Request $request, NFTRepository $nft, EntityManagerInterface $entityManager): Response
     {
-      return new Response();
+       $data = json_decode($request->getContent(), true);
+       $nft = $nft->find($id);
+
+       if(!$nft){
+           return new Response('Utilisateur non trouvé', 404);
+       }
+
+        $nftModified = false;
+
+        if ($data["name"] !== $nft->getName()) {
+            $nft->setName($data["name"]);
+            $nftModified = true;
+        }
+
+        if ($data["pathImage"] !== $nft->getPathImage()) {
+            $nft->setPathImage($data["pathImage"]);
+            $nftModified = true;
+        }
+
+        if ($data["price"] !== $nft->getPrice()) {
+            $nft->setPrice($data["price"]);
+            $nftModified = true;
+        }
+
+        if ($nftModified) {
+            $entityManager->flush();
+            return new Response();
+        } else {
+            return new Response();
+        }
+
 
 
     }
 
-    #[Route('/{id}', name: 'app_n_f_t_delete', methods: ['POST'])]
-    public function delete(Request $request, NFT $nFT, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'app_n_f_t_delete', methods: ['DELETE'])]
+    public function delete($id, Request $request, NFTRepository $nft, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$nFT->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($nFT);
-            $entityManager->flush();
-        }
+        $nft = $nft->find($id);
+        $entityManager->remove($nft);
+        $entityManager->flush();
 
-        return $this->redirectToRoute('app_n_f_t_index', [], Response::HTTP_SEE_OTHER);
+        return new Response();
     }
 }
