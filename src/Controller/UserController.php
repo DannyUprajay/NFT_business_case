@@ -100,7 +100,7 @@ class UserController extends AbstractController
 
         $userModified = false;
 
-        if ($requestData["email"] !== $user->getEmail()) {
+        if (isset($requestData["email"]) && $requestData["email"] !== $user->getEmail()) {
             $user->setEmail($requestData["email"]);
             $userModified = true;
         }
@@ -110,8 +110,12 @@ class UserController extends AbstractController
             $userModified = true;
         }
 
-        if ($requestData["lastName"] !== "" && $requestData["lastName"] !== $user->getLastName()) {
+        if (isset($requestData["lastName"])  && $requestData["lastName"] !== $user->getLastName()) {
             $user->setLastName($requestData["lastName"]);
+            $userModified = true;
+        }
+        if (isset($requestData["username"])  && $requestData["username"] !== $user->getUsername()) {
+            $user->setUsername($requestData["username"]);
             $userModified = true;
         }
 
