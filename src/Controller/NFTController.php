@@ -75,40 +75,33 @@ class NFTController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_n_f_t_edit', methods: ['GET', 'POST'])]
-    public function edit($id, Request $request, NFTRepository $nft, EntityManagerInterface $entityManager): Response
+    public function edit($id, Request $request, NFTRepository $nftRepository, EntityManagerInterface $entityManager): Response
     {
-       $data = json_decode($request->getContent(), true);
-       $nft = $nft->find($id);
+        $data = json_decode($request->getContent(), true);
+        $nft = $nftRepository->find($id);
 
-       if(!$nft){
-           return new Response();
-       }
+        if (!$nft) {
+            return new Response();
+        }
 
-        $nftModified = false;
-
-        if ($data["name"] !== $nft->getName()) {
+        if (isset($data["name"]) && $data["name"] !== $nft->getName()) {
             $nft->setName($data["name"]);
-            $nftModified = true;
         }
 
-        if ($data["pathImage"] !== $nft->getPathImage()) {
+        if (isset($data["pathImage"]) && $data["pathImage"] !== $nft->getPathImage()) {
             $nft->setPathImage($data["pathImage"]);
-            $nftModified = true;
         }
 
-        if ($data["price"] !== $nft->getPrice()) {
+        if (isset($data["price"]) && $data["price"] !== $nft->getPrice()) {
             $nft->setPrice($data["price"]);
-            $nftModified = true;
         }
 
-        if ($nftModified) {
-            $entityManager->flush();
-            return new Response();
-        } else {
-            return new Response();
-        }
+        $entityManager->flush();
+        return new Response();
+
 
     }
+
 
     #[Route('/{id}', name: 'app_n_f_t_delete', methods: ['DELETE'])]
     public function delete($id, Request $request, NFTRepository $nft, EntityManagerInterface $entityManager): Response
