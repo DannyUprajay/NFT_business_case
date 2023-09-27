@@ -65,10 +65,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $galleries;
 
     #[ORM\Column(length: 255, nullable: true, unique: true)]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'userGroup'])]
     private ?string $username = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['userGroup'])]
     private ?string $profilPicture = null;
 
     public function __construct()
