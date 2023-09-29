@@ -32,6 +32,7 @@ class UserController extends AbstractController
         $requestData = json_decode($request->getContent(), true);
         var_dump($requestData);
 
+
         if( isset($requestData['email']) !== null &&
             isset($requestData['firstName']) !== null  &&
             isset($requestData['lastName']) !== null &&
