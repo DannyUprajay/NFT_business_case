@@ -36,9 +36,11 @@ class NFT
     private ?User $user = null;
 
     #[ORM\ManyToMany(targetEntity: Gallery::class, inversedBy: 'nFTs')]
+    #[Groups(['nftall'])]
     private Collection $galleries;
 
     #[ORM\ManyToMany(targetEntity: SubCategory::class, inversedBy: 'nFTs')]
+    #[Groups(['nftall'])]
     private Collection $subCategories;
 
     #[ORM\Column(length: 255)]
