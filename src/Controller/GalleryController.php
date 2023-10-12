@@ -58,7 +58,7 @@ class GalleryController extends AbstractController
     public function show(GalleryRepository $galleryRepository, $id): Response
     {
         $gallery = $galleryRepository->find($id);
-        return $this->json($gallery, 200, [], ['groups' => 'userGroup']);
+        return $this->json($gallery, 200, [], ['groups' => 'gallery']);
     }
 
     #[Route('/{id}/edit', name: 'app_gallery_edit', methods: ['GET', 'POST'])]
