@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Gallery;
 use App\Form\GalleryType;
 use App\Repository\GalleryRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,23 +24,35 @@ class GalleryController extends AbstractController
     }
 
     #[Route('/new', name: 'app_gallery_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
-        $gallery = new Gallery();
-        $form = $this->createForm(GalleryType::class, $gallery);
-        $form->handleRequest($request);
+        $data = json_decode($request->getContent(), true);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $token = $request->headers->get('Authorization');
+        $tokenParts = explode(".", $token);
+        $tokenHeader = base64_decode($tokenParts[0]);
+        $tokenPayload = base64_decode($tokenParts[1]);
+        $jwtPayload = json_decode($tokenPayload);
+
+        if (
+            isset($data["name"]) !== null &&
+            isset($data['description']) !== null  &&
+            isset($data['userId']) !== null
+        ) {
+            $user = $userRepository->findOneBy(['username' => $jwtPayload->username]);
+
+            $gallery = new Gallery();
+            $gallery->setName($data["name"]);
+            $gallery->setDescription($data["description"]);
+            $gallery->setUser($user);
             $entityManager->persist($gallery);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);
+            return new Response("Gallery créé");
+        } else {
+            return new Response("Pas créé");
         }
 
-        return $this->render('gallery/new.html.twig', [
-            'gallery' => $gallery,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/{id}', name: 'app_gallery_show', methods: ['GET'])]

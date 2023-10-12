@@ -49,6 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $gender = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['userGroup'])]
     private ?\DateTimeInterface $birth = null;
 
     #[ORM\ManyToOne(inversedBy: 'users', cascade: ['remove'])]
