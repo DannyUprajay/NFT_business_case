@@ -19,11 +19,12 @@ class Gallery
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['userGroup'])]
+    #[Groups(['userGroup', 'gallery'])]
+
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['userGroup'])]
+    #[Groups(['userGroup', 'gallery'])]
     private ?string $description = null;
 
 
