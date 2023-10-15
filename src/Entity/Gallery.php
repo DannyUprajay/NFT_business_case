@@ -33,6 +33,7 @@ class Gallery
     private ?User $user = null;
 
     #[ORM\ManyToMany(targetEntity: NFT::class, mappedBy: 'galleries')]
+    #[Groups(['gallery'])]
     private Collection $nFTs;
 
     public function __construct()

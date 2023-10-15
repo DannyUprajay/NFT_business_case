@@ -79,14 +79,14 @@ class GalleryController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_gallery_delete', methods: ['POST'])]
-    public function delete(Request $request, Gallery $gallery, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'app_gallery_delete', methods: ['DELETE'])]
+    public function delete($id, Request $request, GalleryRepository $gallery, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$gallery->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($gallery);
-            $entityManager->flush();
-        }
+        $gallery= $gallery->find($id);
 
-        return $this->redirectToRoute('app_gallery_index', [], Response::HTTP_SEE_OTHER);
+        $entityManager->remove($gallery);
+        $entityManager->flush();
+
+        return new Response();
     }
 }

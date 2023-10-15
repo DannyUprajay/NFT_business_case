@@ -15,36 +15,36 @@ class NFT
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     private ?string $pathImage = null;
 
     #[ORM\ManyToOne(inversedBy: 'nfts')]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     #[ORM\ManyToMany(targetEntity: Gallery::class, inversedBy: 'nFTs')]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     private Collection $galleries;
 
     #[ORM\ManyToMany(targetEntity: SubCategory::class, inversedBy: 'nFTs')]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     private Collection $subCategories;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['nftall'])]
+    #[Groups(['nftall', 'gallery'])]
     private ?string $name = null;
 
     public function __construct()
